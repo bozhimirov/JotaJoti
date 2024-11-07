@@ -36,7 +36,6 @@ class SSTVDecoder:
             return None
 
         self.mode = self._decode_vis(header_end)
-        print(self.mode)
 
         vis_end = header_end + round(constants.VIS_BIT_SIZE * 9 * self._sample_rate)
 

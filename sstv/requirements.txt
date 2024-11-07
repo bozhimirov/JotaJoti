@@ -5,3 +5,4 @@ pycparser==2.22
 PySSTV==0.5.7
 scipy==1.14.1
 soundfile==0.12.1
+pydub==0.25.1

@@ -1,7 +1,14 @@
+from pydub import AudioSegment
+
+# AudioSegment.converter = "C:\\Users\\stani\\AppData\\Local\\ffmpegio\\ffmpeg-downloader\\ffmpeg\\bin\\ffmpeg.exe"
+# AudioSegment.ffmpeg = "C:\\Users\\stani\\AppData\\Local\\ffmpegio\\ffmpeg-downloader\\ffmpeg\\bin\\ffmpeg.exe"
+# AudioSegment.ffprobe = "C:\\Users\\stani\\AppData\\Local\\ffmpegio\\ffmpeg-downloader\\ffmpeg\\bin\\ffprobe.exe"
+
 from JotaJoti.sstv.constants import M1
 
 
 def byte_to_freq(value):
+    """Converts byte to frequency"""
     return M1.FREQ_BLACK + M1.FREQ_RANGE * value / 255
 
 
@@ -27,3 +34,25 @@ def barycentric_peak_interp(bins, x):
         return 0
 
     return (y3 - y1) / denom + x
+
+
+def normalize(audio, arg):
+    """Modify value of the audio file"""
+    ext = audio.split('.')[-1]
+    sound = AudioSegment.from_file(audio, format=ext)
+    while sound.dBFS < -arg:
+        sound += 1
+    return sound
+
+
+def combine(audio1, audio2, name):
+    """Combine two audio files"""
+    sound1 = normalize(audio1, 5)
+    sound = normalize(audio2, 10)
+
+    if len(sound1) > len(sound):
+        overlay = sound1.overlay(sound, position=0)
+    else:
+        overlay = sound.overlay(sound1, position=0)
+
+    overlay.export(f"./audio/{name}.wav", format="wav")
